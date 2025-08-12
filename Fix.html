@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalkulator Zakat - UPZ Thawalib Parabek</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+    }
+
+    header {
+      background-color: #0a6847;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2, h3 {
+      color: #0a6847;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #0a6847;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #085d3e;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #e6f4ea;
+      border-left: 5px solid #0a6847;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Kalkulator Zakat</h1>
+    <p>UPZ Pondok Pesantren Sumatera Thawalib Parabek</p>
+  </header>
+
+  <div class="container">
+    <h2>Data Muzakki</h2>
+    <label for="nama">Nama Lengkap:</label>
+    <input type="text" id="nama" placeholder="Contoh: Ahmad Fulan" required/>
+
+    <label for="hp">Nomor WhatsApp:</label>
+    <input type="tel" id="hp" placeholder="Contoh: 081234567890" required/>
+
+    <h2>Pilih Jenis Zakat</h2>
+    <label for="jenis">Jenis Zakat:</label>
+    <select id="jenis" onchange="toggleFields()">
+      <option value="penghasilan">Zakat Penghasilan</option>
+      <option value="maal">Zakat Maal</option>
+      <option value="perdagangan">Zakat Perdagangan</option>
+      <option value="pertanian">Zakat Pertanian</option>
+    </select>
+
+    <div id="inputPenghasilan">
+      <label for="income">Jumlah Penghasilan Bulanan (Rp):</label>
+      <input type="number" id="income" placeholder="Contoh: 5000000" />
+    </div>
+
+    <div id="inputMaal" style="display: none;">
+      <label for="wealth">Total Harta Simpanan (Rp):</label>
+      <input type="number" id="wealth" placeholder="Contoh: 100000000" />
+    </div>
+
+    <div id="inputPerdagangan" style="display: none;">
+      <label for="modal">Nilai Modal Usaha (Rp):</label>
+      <input type="number" id="modal" placeholder="Contoh: 50000000" />
+      <label for="keuntungan">Keuntungan Bersih (Rp):</label>
+      <input type="number" id="keuntungan" placeholder="Contoh: 10000000" />
+    </div>
+
+    <div id="inputPertanian" style="display: none;">
+      <label for="hasilPanen">Jumlah Hasil Panen (Kg):</label>
+      <input type="number" id="hasilPanen" placeholder="Contoh: 1000" />
+      <label for="hargaGabah">Harga Gabah/Kg (Rp):</label>
+      <input type="number" id="hargaGabah" placeholder="Contoh: 6000" />
+    </div>
+
+    <button onclick="hitungZakat()">Hitung & Kirim via WhatsApp</button>
+
+    <div class="result" id="result" style="display: none;">
+      <h3>Hasil Perhitungan:</h3>
+      <p id="hasilZakat"></p>
+      <p><strong>Catatan:</strong> Data ini dapat dikirim ke admin UPZ melalui WhatsApp.</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 UPZ Thawalib Parabek. Semua hak dilindungi.
+  </footer>
+
+  <script>
+    function toggleFields() {
+      const jenis = document.getElementById('jenis').value;
+      document.getElementById('inputPenghasilan').style.display = jenis === 'penghasilan' ? 'block' : 'none';
+      document.getElementById('inputMaal').style.display = jenis === 'maal' ? 'block' : 'none';
+      document.getElementById('inputPerdagangan').style.display = jenis === 'perdagangan' ? 'block' : 'none';
+      document.getElementById('inputPertanian').style.display = jenis === 'pertanian' ? 'block' : 'none';
+    }
+
+    function hitungZakat() {
+      const jenis = document.getElementById('jenis').value;
+      const nama = document.getElementById('nama').value.trim();
+      const hp = document.getElementById('hp').value.trim();
+      let zakat = 0;
+      let detail = "";
+      let total = 0;
+
+      if (!nama || !hp) {
+        alert("Mohon lengkapi nama dan nomor WhatsApp.");
+        return;
+      }
+
+      if (jenis === 'penghasilan') {
+        const income = parseFloat(document.getElementById('income').value) || 0;
+        if (income >= 8500000) {
+          zakat = income * 0.025;
+          detail = `Jenis Zakat: Penghasilan\nPenghasilan: Rp ${income.toLocaleString('id-ID')}\nZakat: Rp ${zakat.toLocaleString('id-ID')}`;
+        } else {
+          detail = `Penghasilan belum mencapai nisab (Rp 8.500.000)`;
+        }
+
+      } else if (jenis === 'maal') {
+        const wealth = parseFloat(document.getElementById('wealth').value) || 0;
+        if (wealth >= 102000000) {
+          zakat = wealth * 0.025;
+          detail = `Jenis Zakat: Maal\nTotal Harta: Rp ${wealth.toLocaleString('id-ID')}\nZakat: Rp ${zakat.toLocaleString('id-ID')}`;
+        } else {
+          detail = `Harta belum mencapai nisab (Rp 102.000.000)`;
+        }
+
+      } else if (jenis === 'perdagangan') {
+        const modal = parseFloat(document.getElementById('modal').value) || 0;
+        const keuntungan = parseFloat(document.getElementById('keuntungan').value) || 0;
+        total = modal + keuntungan;
+        if (total >= 102000000) {
+          zakat = total * 0.025;
+          detail = `Jenis Zakat: Perdagangan\nModal: Rp ${modal.toLocaleString('id-ID')}\nKeuntungan: Rp ${keuntungan.toLocaleString('id-ID')}\nTotal: Rp ${total.toLocaleString('id-ID')}\nZakat: Rp ${zakat.toLocaleString('id-ID')}`;
+        } else {
+          detail = `Total harta belum mencapai nisab (Rp 102.000.000)`;
+        }
+
+      } else if (jenis === 'pertanian') {
+        const hasil = parseFloat(document.getElementById('hasilPanen').value) || 0;
+        const harga = parseFloat(document.getElementById('hargaGabah').value) || 0;
+        total = hasil * harga;
+        if (hasil >= 653) {
+          zakat = total * 0.10;
+          detail = `Jenis Zakat: Pertanian\nHasil Panen: ${hasil.toLocaleString('id-ID')} kg\nHarga/kg: Rp ${harga.toLocaleString('id-ID')}\nTotal: Rp ${total.toLocaleString('id-ID')}\nZakat (10%): Rp ${zakat.toLocaleString('id-ID')}`;
+        } else {
+          detail = `Hasil panen belum mencapai nisab (653 kg gabah)`;
+        }
+      }
+
+      document.getElementById('hasilZakat').innerText = detail;
+      document.getElementById('result').style.display = 'block';
+
+      const fullMessage =
+        `Assalamu'alaikum UPZ Thawalib Parabek,` +
+        `Saya *${nama}* ingin melaporkan perhitungan zakat:` +
+        `${detail.replace(/\n/g, '%0A')}` +
+        `Nomor HP: ${hp}` +
+        `Terima kasih.`;
+
+      const encodedMessage = encodeURIComponent(fullMessage);
+      const noAdmin = "6282169812570";
+      const waUrl = `https://wa.me/${noAdmin}?text=${encodedMessage}`;
+      window.open(waUrl, "_blank");
+    }
+  </script>
+</body>
+</html>
